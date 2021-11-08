@@ -1,21 +1,26 @@
 // Initilize packages needed for app to work
 const fs = require('fs');
-var inquirer = require('inquirer');
+const inquirer = require('inquirer');
+const mysql = require('mysql2');
+
+//const consoleTable = require(console.table);
+
+// create the connection to database
+const connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'company_db'
+});
 
 // Require classes
 const Employee = require("./lib/Employee");
 const Role = require("./lib/Role");
 
-// Main menu questions
-const menu = [
-    {
-        type: 'list',
-        message: 'What would you like to do?',
-        name: 'questions',
-        choices: ['View All Employees', 'Add Employee', 'Update Employee Role',
-    'View All Roles', 'Add Role', 'View All Departments', 'Add Department', 'Quit'],
-    }
-]
+// Require files with text variables
+const mainMenu = require('./lib/mainMenu');
+const splash = require('./lib/splash');
+
 
 // Ask for departement name
 const addDepartement = [
@@ -68,30 +73,12 @@ const updateRole = [
     // ****** ADD LIST OF EMPLOYEES
 ];
 
-const employeeManager = 
-`
-███████╗███╗   ███╗██████╗ ██╗      ██████╗ ██╗   ██╗███████╗███████╗
-██╔════╝████╗ ████║██╔══██╗██║     ██╔═══██╗╚██╗ ██╔╝██╔════╝██╔════╝
-█████╗  ██╔████╔██║██████╔╝██║     ██║   ██║ ╚████╔╝ █████╗  █████╗  
-██╔══╝  ██║╚██╔╝██║██╔═══╝ ██║     ██║   ██║  ╚██╔╝  ██╔══╝  ██╔══╝  
-███████╗██║ ╚═╝ ██║██║     ███████╗╚██████╔╝   ██║   ███████╗███████╗
-╚══════╝╚═╝     ╚═╝╚═╝     ╚══════╝ ╚═════╝    ╚═╝   ╚══════╝╚══════╝
-                                                                                                                                      
-███╗   ███╗ █████╗ ███╗   ██╗ █████╗  ██████╗ ███████╗██████╗        
-████╗ ████║██╔══██╗████╗  ██║██╔══██╗██╔════╝ ██╔════╝██╔══██╗       
-██╔████╔██║███████║██╔██╗ ██║███████║██║  ███╗█████╗  ██████╔╝       
-██║╚██╔╝██║██╔══██║██║╚██╗██║██╔══██║██║   ██║██╔══╝  ██╔══██╗       
-██║ ╚═╝ ██║██║  ██║██║ ╚████║██║  ██║╚██████╔╝███████╗██║  ██║       
-╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝                                                                                         
-`;
 
 // Main menu function
 function menuOptions() {
     
-console.log(employeeManager);
-
     inquirer
-        .prompt(menu)
+        .prompt(mainMenu)
         .then((data) => {
  
             switch (data.questions) {
@@ -118,6 +105,7 @@ console.log(employeeManager);
                   break;
                 case "Quit":
                     console.log("Thanks, have a great day!");
+                    process.exit();
                   break;
                 default:
                     console.log("Menu selection error")
@@ -128,6 +116,14 @@ console.log(employeeManager);
 // Show all employees
 function showEmployees(){
 
+    connection.query(
+        "SELECT * FROM employee",
+        function (err, res) {
+            if (err) throw err;
+            console.log(res);
+            menuOptions();
+        }
+    )
 }
 
 
@@ -145,6 +141,7 @@ function employee(){
         });
 }
 
+// Update existing employee role
 function updateEmployeeRole(){
 
     inquirer
@@ -158,18 +155,37 @@ function updateEmployeeRole(){
         });
 }
 
+// Show all roles
 function showRoles(){
 
+    connection.query(
+        "SELECT * FROM roles",
+        function (err, res) {
+            if (err) throw err;
+            console.log(res);
+            menuOptions();
+        }
+    )
 }
 
+// Add a new role
 function role(){
     // Add Role
 }
 
+// Show all departements
 function showDepartements(){
-
+    connection.query(
+        "SELECT * FROM departement",
+        function (err, res) {
+            if (err) throw err;
+            console.log(res);
+            menuOptions();
+        }
+    )
 }
 
+// Add a new departement
 function departement(){
 
     inquirer
@@ -183,5 +199,5 @@ function departement(){
     });
 }
 
-menuOptions()
-
+console.log(splash);
+menuOptions();
