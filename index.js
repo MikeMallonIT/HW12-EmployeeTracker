@@ -2,8 +2,7 @@
 const fs = require('fs');
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
-
-//const consoleTable = require(console.table);
+const cTable = require('console.table');
 
 // create the connection to database
 const connection = mysql.createConnection({
@@ -15,63 +14,10 @@ const connection = mysql.createConnection({
 
 // Require classes
 const Employee = require("./lib/Employee");
-const Role = require("./lib/Role");
 
 // Require files with text variables
 const mainMenu = require('./lib/mainMenu');
 const splash = require('./lib/splash');
-
-
-// Ask for departement name
-const addDepartement = [
-    {
-        type: 'input',
-        name: 'name',
-        message: "What is the name of the departement?",
-    }
-];
-
-const addRole = [
-    {
-        type: 'input',
-        name: 'name',
-        message: "What is the name of the role?",
-    },
-    {
-        type: 'input',
-        name: 'salary',
-        message: "What is the salary of this role?",
-    },
-    // Which departement does the role belong to?
-    // ****** ADD LIST OF DEPARTEMENTS
-];
-
-const addEmployee = [
-    {
-        type: 'input',
-        name: 'firstName',
-        message: "What is the employee's first name?",
-    },
-    {
-        type: 'input',
-        name: 'lastName',
-        message: "What is the employee's last name?",
-    },
-    // What is the employee's role?
-    // ****** ADD LIST OF ROLES
-
-    // Who is the employee's namager?
-    // ****** ADD LIST OF MANAGERS
-];
-
-const updateRole = [
-    
-    // Which employee’s role do you want to update?
-    // ****** ADD LIST OF EMPLOYEES
-
-    // Which role do you want to adding to the selected employee?
-    // ****** ADD LIST OF EMPLOYEES
-];
 
 
 // Main menu function
@@ -120,12 +66,87 @@ function showEmployees(){
         "SELECT * FROM employee",
         function (err, res) {
             if (err) throw err;
-            console.log(res);
+            console.table(res);
             menuOptions();
         }
     )
 }
 
+
+
+
+function getRoles(){
+
+    let rolesArray = [];
+    let output = [];
+    
+    const sql = `SELECT * FROM ROLES`
+
+    connection.query(sql, (err, res) => {
+        if(err){
+            console.log(err);
+        }
+
+        rolesArray = res;
+        for(let i=0; i<rolesArray.length; i++){
+            output.push(rolesArray[i]);
+            
+        }
+        //console.log(rolesArray[1])
+        console.log(rolesArray[1].roles_title);
+        return rolesArray
+    })
+    
+        
+};
+
+            //for(let i=0; i<rolesArray.length; i++){
+
+            //    output.push(rolesArray[i]);
+        
+
+                        //    console.log(rolesArray[i].roles_id);
+            //    console.log(rolesArray[i].roles_title);
+
+            //rolesArray.forEach(function(entry){
+                //console.log(entry);
+
+            //})
+
+
+//var a = ["a", "b", "c"];
+//a.forEach(function(entry) {
+//  console.log(entry);
+//});
+
+function log(data){
+    console.log(data);
+}
+
+const addEmployee = [
+    {
+        type: 'input',
+        name: 'firstName',
+        message: "What is the employee's first name?",
+    },
+    {
+        type: 'input',
+        name: 'lastName',
+        message: "What is the employee's last name?",
+    },    
+    {
+        type: 'list',
+        message: "What is the employee's role?",
+        name: 'role',
+        choices: ['1', '2', '3'],
+    },
+    {
+        type: 'list',
+        message: "Who is the employee's manager?",
+        name: 'manager',
+        choices: ['1', '2', '3'],
+    },
+];
 
 // Add a new employee
 function employee(){
@@ -133,13 +154,38 @@ function employee(){
     inquirer
         .prompt(addEmployee)
         .then((data) => {
+            console.log(data);
 
-            const newEmployee = new Employee(data.firstName, data.lastName)
+            //const newEmployee = new Employee(data.firstName, data.lastName, data.role, data.manager)
+
+            const sql = `INSERT INTO employee SET ?`;
+
+            var query = connection.query(
+                sql,
+                {
+                    first_name: data.firstName,
+                    last_name: data.lastName,
+                    roles_id: data.role,
+                    manager_id: data.manager
+                }
+            )
+
+            console.log(query.sql);
 
             // Show main manu
             menuOptions();
         });
 }
+
+const updateRole = [
+    
+    // Which employee’s role do you want to update?
+    // ****** ADD LIST OF EMPLOYEES
+
+    // Which role do you want to adding to the selected employee?
+    // ****** ADD LIST OF EMPLOYEES
+];
+
 
 // Update existing employee role
 function updateEmployeeRole(){
@@ -162,11 +208,26 @@ function showRoles(){
         "SELECT * FROM roles",
         function (err, res) {
             if (err) throw err;
-            console.log(res);
+            console.table(res);
             menuOptions();
         }
     )
 }
+
+const addRole = [
+    {
+        type: 'input',
+        name: 'name',
+        message: "What is the name of the role?",
+    },
+    {
+        type: 'input',
+        name: 'salary',
+        message: "What is the salary of this role?",
+    },
+    // Which departement does the role belong to?
+    // ****** ADD LIST OF DEPARTEMENTS
+];
 
 // Add a new role
 function role(){
@@ -179,11 +240,20 @@ function showDepartements(){
         "SELECT * FROM departement",
         function (err, res) {
             if (err) throw err;
-            console.log(res);
+            console.table(res);
             menuOptions();
         }
     )
 }
+
+// Ask for departement name
+const addDepartement = [
+    {
+        type: 'input',
+        name: 'name',
+        message: "What is the name of the departement?",
+    }
+];
 
 // Add a new departement
 function departement(){
@@ -199,5 +269,8 @@ function departement(){
     });
 }
 
-console.log(splash);
-menuOptions();
+//console.log(splash);
+//menuOptions();
+//getRoles();
+console.log(getRoles());
+
