@@ -72,33 +72,47 @@ function showEmployees(){
     )
 }
 
-
-
-
-function getRoles(){
-
-    let rolesArray = [];
-    let output = [];
+async function testResults() { 
+    let roles = await getRoles();
     
-    const sql = `SELECT * FROM ROLES`
+    //console.log(roles);
+    return roles;
+    }
 
-    connection.query(sql, (err, res) => {
-        if(err){
-            console.log(err);
-        }
 
-        rolesArray = res;
-        for(let i=0; i<rolesArray.length; i++){
-            output.push(rolesArray[i]);
-            
-        }
-        //console.log(rolesArray[1])
-        console.log(rolesArray[1].roles_title);
-        return rolesArray
-    })
+async function getRoles(){
+
+    // let rolesArray = [];
     
-        
+    // const sql = `SELECT * FROM ROLES`
+    // connection.query(sql, (err, res) => {
+    //     rolesArray = res;
+    // })
+
+    // return rolesArray;
+
+    const sql = `SELECT * FROM ROLES`;
+
+    try{
+        const results = await connection.promise().query(sql);
+
+        return results;
+    }
+
+    catch (err){
+        console.log("error");
+        throw err;
+    }  
 };
+
+        // for(let i=0; i<rolesArray.length; i++){
+        //     output.push(rolesArray[i]);
+            
+        // }
+        //console.log(rolesArray[1])
+        //console.log(rolesArray[1].roles_title);
+        
+
 
             //for(let i=0; i<rolesArray.length; i++){
 
@@ -272,5 +286,9 @@ function departement(){
 //console.log(splash);
 //menuOptions();
 //getRoles();
-console.log(getRoles());
+
+//myFunc();
+
+
+console.log(testResults());
 
