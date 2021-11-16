@@ -21,7 +21,7 @@ GIVEN a command-line application that accepts user input
 WHEN I start the application
 THEN I am presented with the following options: view all departments, view all roles, view all employees, add a department, add a role, add an employee, and update an employee role
 WHEN I choose to view all departments
-THEN I am presented with a formatted table showing department names and department ids
+THEN I am presented with a formatted table shoƒwing department names and department ids
 WHEN I choose to view all roles
 THEN I am presented with the job title, role id, the department that role belongs to, and the salary for that role
 WHEN I choose to view all employees
@@ -170,3 +170,17 @@ You are required to submit BOTH of the following for review:
 
 - - -
 © 2021 Trilogy Education Services, LLC, a 2U, Inc. brand. Confidential and Proprietary. All Rights Reserved.
+
+
+
+
+https://www.mysqltutorial.org/mysql-update-data.aspx
+
+https://dyclassroom.com/mysql/mysql-select-from-table
+
+https://forum.freecodecamp.org/t/console-log-array-prints-a-result-but-return-array-is-undefined/192382
+
+
+https://dev.to/afifsohaili/dealing-with-promises-in-an-array-with-async-await-5d7g
+
+https://dev.mysql.com/doc/refman/8.0/en/datetime.html
