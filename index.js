@@ -398,7 +398,6 @@ function showDepartements(){
     )
 }
 
-
 // Add a new departement
 function addDepartement(){
 
